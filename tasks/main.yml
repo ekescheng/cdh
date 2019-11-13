@@ -1,0 +1,5 @@
+---
+# tasks file for cdh
+- include: init.yml
+- include: cpfile.yml
+- include: reboot.yml

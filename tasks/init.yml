@@ -1,0 +1,23 @@
+---
+- name: init cdh vm
+  command: "{{ item }}"
+  with_items:
+    - hostnamectl set-hostname {{ myhn }}
+    - echo {{ myhostname }} > /etc/sysconfig/network
+    - systemctl disable firewalld
+    - systemctl stop firewalld
+    - yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
+    - rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+    - yum install https://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm -y
+    - yum -y update
+    - yum install vim wget net-tools git unzip zip gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel -y
+    - sysctl -w vm.swappiness=0
+    - echo "vm.swappiness=0" > /etc/sysctl.conf
+    - echo never > /sys/kernel/mm/transparent_hugepage/defrag
+    - echo never > /sys/kernel/mm/transparent_hugepage/enabled
+    - echo "echo never > /sys/kernel/mm/transparent_hugepage/enabled" >>  /etc/rc.local
+    - echo "echo never > /sys/kernel/mm/transparent_hugepage/defrag" >>  /etc/rc.local
+    - chmod u+x  /etc/rc.local
+    - sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config
+    - setenforce 0
+    - yum install python27 java-1.8.0-openjdk-devel -y
